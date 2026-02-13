@@ -10,8 +10,7 @@
   <div class="app">
     <div class="tabs">
       <button class="tab-button tab-button--active" data-view="mensaje">Reportes</button>
-      <button class="tab-button" data-view="asistentes">Asistencia</button>
-      <button class="tab-button" data-view="equipo">Team</button>
+      <button class="tab-button" data-view="texto">Texto</button>
     </div>
 
     <div class="view view--active" id="view-mensaje">
@@ -23,7 +22,7 @@
           </button>
           <div class="accordion-content">
             <div class="row">
-              <label for="institucion">Nombre de la institución</label>
+              <label for="institucion">Centro Escolar</label>
               <input
                 id="institucion"
                 type="text"
@@ -145,8 +144,12 @@
                 </option>
                 <option value="Realizando Cierre">Realizando Cierre</option>
                 <option value="Cierre realizado">Cierre realizado</option>
+                <option value="Cierre parcial realizado">Cierre parcial realizado</option>
                 <option value="En Camino a Gobernacion">
                   En Camino a Gobernacion
+                </option>
+                <option value="Entregado en Torre Gobernacion">
+                  Entregado en Torre Gobernacion
                 </option>
                 <option value="otro">Otro estado...</option>
               </select>
@@ -200,19 +203,14 @@
             <div class="row">
               <label>Integrantes adicionales</label>
               <label class="inline-label">
-                <input type="checkbox" id="incluir-integrantes" checked />
-                Incluir integrantes en el mensaje
-              </label>
-              <label class="inline-label">
                 <input type="checkbox" id="incluir-lista-team" />
-                Incluir lista de Team
+                Incluir lista de Equipo
               </label>
-              <button
-                type="button"
-                id="open-members-modal"
-                class="pill-button"
-              >
-                Editar integrantes
+            </div>
+            <div class="row">
+              <div id="equipo-lista"></div>
+              <button type="button" id="add-equipo-btn" class="pill-button">
+                + Agregar asistente
               </button>
             </div>
           </div>
@@ -331,6 +329,45 @@
                 />
               </div>
             </div>
+
+            <div class="row">
+              <div class="row-inline">
+                <label class="inline-label">
+                  <input type="checkbox" id="incluir-poblacionEstudiantil" checked />
+                  Incluir en el mensaje
+                </label>
+              </div>
+              <label for="poblacionEstudiantil">Población Estudiantil (opcional)</label>
+              <input
+                id="poblacionEstudiantil"
+                type="number"
+                min="0"
+                placeholder="Ej: 350"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion accordion--collapsed">
+          <button type="button" class="accordion-header">
+            <span class="accordion-title">Observaciones</span>
+            <span class="accordion-toggle-icon">▾</span>
+          </button>
+          <div class="accordion-content">
+            <div class="row row-inline">
+              <label class="inline-label">
+                <input type="checkbox" id="incluir-otras-novedades" checked />
+                Incluir sección "Observaciones"
+              </label>
+            </div>
+            <div class="row">
+              <label for="otrasNovedadesIncidencias">Detalle</label>
+              <textarea
+                id="otrasNovedadesIncidencias"
+                rows="3"
+                placeholder="Describe aquí las novedades o incidencias relevantes"
+              ></textarea>
+            </div>
           </div>
         </div>
 
@@ -359,7 +396,7 @@
       </form>
 
       <div class="card preview-card">
-        <textarea id="preview" readonly></textarea>
+        <div id="preview" class="preview-message"></div>
         <div class="actions">
           <button id="copy-btn" type="button">Copiar</button>
           <button id="whatsapp-btn" type="button">WhatsApp</button>
@@ -377,7 +414,7 @@
           </button>
           <div class="accordion-content">
             <div class="row">
-              <label for="institucion-estado">Nombre de la institución</label>
+              <label for="institucion-estado">Centro Escolar</label>
               <input
                 id="institucion-estado"
                 type="text"
@@ -404,8 +441,12 @@
                 </option>
                 <option value="Realizando Cierre">Realizando Cierre</option>
                 <option value="Cierre realizado">Cierre realizado</option>
+                <option value="Cierre parcial realizado">Cierre parcial realizado</option>
                 <option value="En Camino a Gobernacion">
                   En Camino a Gobernacion
+                </option>
+                <option value="Entregado en Torre Gobernacion">
+                  Entregado en Torre Gobernacion
                 </option>
                 <option value="otro">Otro estado...</option>
               </select>
@@ -472,83 +513,12 @@
       </div>
     </div>
 
-    <div class="view" id="view-asistentes">
-      <form id="attendees-form" class="card">
-        <div class="accordion">
-          <button type="button" class="accordion-header">
-            <span class="accordion-title">Datos del reporte</span>
-            <span class="accordion-toggle-icon">▾</span>
-          </button>
-          <div class="accordion-content">
-            <div class="row">
-              <label for="institucion-asistentes">Nombre de la institución</label>
-              <input
-                id="institucion-asistentes"
-                type="text"
-                value='Centro educativo catolico "Santa Teresa de Lisieux"'
-              />
-            </div>
 
-            <div class="row">
-              <label for="codigoCE-asistentes">Código de CE</label>
-              <input id="codigoCE-asistentes" type="text" placeholder="Ej: 12345" />
-            </div>
 
-            <div class="row row-inline">
-              <label class="inline-label">
-                <input type="checkbox" id="incluir-fecha-asistentes" checked />
-                Incluir fecha del reporte
-              </label>
-            </div>
-
-            <div class="row row-inline">
-              <label class="inline-label">
-                <input type="checkbox" id="incluir-hora-asistentes" checked />
-                Incluir hora actual del reporte
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <div class="accordion accordion--collapsed">
-          <button type="button" class="accordion-header">
-            <span class="accordion-title">Lista de asistentes</span>
-            <span class="accordion-toggle-icon">▾</span>
-          </button>
-          <div class="accordion-content">
-            <div class="row">
-              <div id="asistentes-lista-visual"></div>
-            </div>
-          </div>
-        </div>
-      </form>
-
+    <div class="view" id="view-texto">
       <div class="card preview-card">
-        <textarea id="preview-asistentes" readonly></textarea>
-        <div class="actions">
-          <button id="copy-asistentes-btn" type="button">Copiar</button>
-          <button id="whatsapp-asistentes-btn" type="button">WhatsApp</button>
-        </div>
+        <textarea id="texto-libree" class="big-textarea" placeholder="Escribe aquí tu texto libre..."></textarea>
       </div>
-    </div>
-
-    <div class="view" id="view-equipo">
-      <form id="equipo-form" class="card">
-        <div class="accordion">
-          <button type="button" class="accordion-header">
-            <span class="accordion-title">Lista de asistentes</span>
-            <span class="accordion-toggle-icon">▾</span>
-          </button>
-          <div class="accordion-content">
-            <div class="row">
-              <div id="equipo-lista"></div>
-              <button type="button" id="add-equipo-btn" class="pill-button">
-                + Agregar asistente
-              </button>
-            </div>
-          </div>
-        </div>
-      </form>
     </div>
   </div>
 
@@ -576,6 +546,6 @@
     </div>
   </div>
 
-  <script defer src="main.js"></script>
+  <script defer src="./main.js"></script>
 </body>
 </html>
