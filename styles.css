@@ -1,0 +1,614 @@
+:root {
+  --primary: #111827;
+  /* Dark black/gray */
+  --primary-light: #e5e7eb;
+  --text-main: #000000;
+  /* Pure black */
+  --text-muted: #6b7280;
+  --bg-body: #f3f4f6;
+  --bg-card: #ffffff;
+  --input-bg: #f5f6fa;
+  /* Slightly lighter than before */
+  --border-color: #e2e8f0;
+  --radius-card: 32px;
+  --radius-input: 16px;
+  --radius-button: 999px;
+  --shadow-card: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg-body);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.app {
+  width: 100%;
+  max-width: 480px;
+  height: 100vh;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  /* Ensure scrolling happens inside app if needed, or body handles it */
+  overflow-y: auto;
+}
+
+/* Header */
+.app-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 20px 10px;
+  /* Top margin/padding increased */
+  background: #ffffff;
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.app-header h1 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.back-btn {
+  background: transparent;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+
+.back-btn:hover {
+  background: var(--input-bg);
+}
+
+.header-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-grow: 1;
+  justify-content: flex-end;
+}
+
+.clock {
+  font-size: 128px;
+  /* Doubled as requested */
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 10px 0 0 0;
+  /* Extra top margin */
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+/* Manual Report Tracker */
+.report-tracker {
+  display: flex;
+  gap: 15px;
+  /* Increased gap for timestamps */
+  align-items: flex-start;
+  /* Align to top to allow text below */
+  justify-content: center;
+  padding-bottom: 5px;
+}
+
+.bubble-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.tracker-bubble {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid var(--border-color);
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: transparent;
+  /* Hide checkmark when unchecked */
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.tracker-bubble:hover {
+  border-color: #333;
+}
+
+.tracker-bubble--active {
+  background: #111827;
+  /* Dark color requested */
+  border-color: #111827;
+  color: white;
+  /* Show checkmark */
+  transform: scale(1.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.bubble-timestamp {
+  font-size: 11px;
+  /* Reverted to smaller size */
+  color: var(--text-muted);
+  font-weight: 500;
+  min-height: 14px;
+  /* prevent jumping */
+}
+
+.add-bubble-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px dashed var(--border-color);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: all 0.2s;
+  align-self: flex-start;
+  /* Align with bubbles */
+  margin-top: 2px;
+  /* Visual alignment */
+}
+
+.add-bubble-btn:hover {
+  border-color: var(--text-muted);
+  background: var(--input-bg);
+}
+
+/* Round Reset Button */
+.reset-btn-round {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #fee2e2;
+  color: #ef4444;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.reset-btn-round:hover {
+  background: #ef4444;
+  color: white;
+  transform: scale(1.05);
+}
+
+.texto-tab-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  background: var(--bg-card);
+  padding: 6px;
+  border-radius: var(--radius-button);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.tab-button {
+  flex: 1;
+  border: none;
+  border-radius: var(--radius-button);
+  padding: 10px 0;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+}
+
+.tab-button--active {
+  background: var(--primary);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+/* Views */
+.view {
+  flex: 1;
+  display: none;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.view--active {
+  display: flex;
+}
+
+/* Cards */
+.card {
+  background: var(--bg-card);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  /* subtle border */
+}
+
+/* Form Styles from Image */
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  letter-spacing: 0.01em;
+}
+
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+  width: 100%;
+  border-radius: var(--radius-input);
+  border: 1px solid #d1d5db;
+  /* Soft gray border */
+  background: var(--input-bg);
+  padding: 16px 20px;
+  font-size: 15px;
+  color: var(--text-main);
+  font-weight: 500;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #9ca3af;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  background: #ffffff;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px var(--primary-light);
+}
+
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 16px;
+  padding-right: 40px;
+}
+
+/* Accordion Re-styling to look cleaner */
+.accordion {
+  background: transparent;
+  border: none;
+  margin-bottom: 12px;
+  border-radius: var(--radius-input);
+  overflow: hidden;
+}
+
+.accordion-header {
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 12px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  color: var(--text-main);
+}
+
+.accordion-title {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.accordion-toggle-icon {
+  font-size: 12px;
+  color: var(--text-muted);
+  background: var(--input-bg);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.accordion--collapsed .accordion-toggle-icon {
+  transform: rotate(-90deg);
+}
+
+.accordion--collapsed .accordion-content {
+  display: none;
+}
+
+.accordion-content {
+  padding: 10px 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Custom Checkbox */
+.inline-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-main);
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+input[type="checkbox"] {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-color);
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+input[type="checkbox"]:checked {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+  width: 5px;
+  height: 10px;
+  border-right: 2px solid white;
+  border-bottom: 2px solid white;
+}
+
+/* Radio buttons */
+input[type="radio"] {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-color);
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+  position: relative;
+}
+
+input[type="radio"]:checked {
+  border-color: var(--primary);
+}
+
+input[type="radio"]:checked::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  background: var(--primary);
+  border-radius: 50%;
+}
+
+/* Buttons */
+.pill-button {
+  width: 100%;
+  background: var(--primary);
+  color: #ffffff;
+  border: none;
+  padding: 14px;
+  border-radius: var(--radius-button);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.pill-button:hover {
+  background: #000000;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+.actions button {
+  flex: 1;
+  padding: 16px;
+  border-radius: var(--radius-button);
+  border: none;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+#copy-btn,
+#copy-status-btn {
+  background: var(--input-bg);
+  color: var(--text-main);
+}
+
+#whatsapp-btn,
+#whatsapp-status-btn {
+  background: #25D366;
+  color: white;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.4);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* Preview Area - WhatsApp Style */
+.preview-message {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  background: #dcf8c6;
+  /* WhatsApp light green/beige */
+  color: #000000;
+  /* Dark text */
+  padding: 16px;
+  border-radius: 8px;
+  border-top-left-radius: 0;
+  white-space: pre-wrap;
+  min-height: 150px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  border: none;
+}
+
+.big-textarea {
+  min-height: 300px;
+  background: #ffffff;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.modal-overlay.modal-overlay--visible {
+  display: flex;
+}
+
+.modal {
+  background: white;
+  width: 100%;
+  max-width: 400px;
+  border-radius: var(--radius-card);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-close-btn {
+  background: var(--input-bg);
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Small grid adjustments */
+.small-grid {
+  display: flex;
+  gap: 12px;
+}
+
+.small-grid>div {
+  flex: 1;
+}
+
+.remove-member-btn {
+  background: #fee2e2;
+  color: #ef4444;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.member-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
