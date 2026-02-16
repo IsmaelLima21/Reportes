@@ -1,8 +1,8 @@
 function getGreetingByHour(date = new Date()) {
   const hour = date.getHours();
-  if (hour < 12) return "Buenos días.";
-  if (hour < 19) return "Buenas tardes.";
-  return "Buenas noches.";
+  if (hour < 12) return "Buenos Días.";
+  if (hour < 19) return "Buenas Tardes.";
+  return "Buenas Noches.";
 }
 
 function buildMessage() {
