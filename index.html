@@ -43,6 +43,32 @@
             <div class="row">
               <div class="row-inline">
                 <label class="inline-label">
+                  <input type="checkbox" id="incluir-departamento" checked />
+                  Incluir en el mensaje
+                </label>
+              </div>
+              <label for="departamento">Departamento (opcional)</label>
+              <select id="departamento">
+                <option value="">— Seleccionar —</option>
+              </select>
+            </div>
+
+            <div class="row">
+              <div class="row-inline">
+                <label class="inline-label">
+                  <input type="checkbox" id="incluir-distrito" checked />
+                  Incluir en el mensaje
+                </label>
+              </div>
+              <label for="distrito">Distrito (opcional)</label>
+              <select id="distrito">
+                <option value="">— Seleccionar —</option>
+              </select>
+            </div>
+
+            <div class="row">
+              <div class="row-inline">
+                <label class="inline-label">
                   <input type="checkbox" id="incluir-directorCE" checked />
                   Incluir en el mensaje
                 </label>
@@ -445,6 +471,11 @@
       </div>
       <div class="card preview-card">
         <textarea id="texto-libree" class="big-textarea" placeholder="Escribe aquí tu texto libre..."></textarea>
+        <div class="actions" style="margin-top: 10px;">
+          <button id="copy-texto-btn" type="button" class="pill-button">Copiar</button>
+          <button id="clear-texto-btn" type="button" class="pill-button"
+            style="background-color: var(--danger, #ef4444); color: white;">Borrar</button>
+        </div>
       </div>
     </div>
   </div>
@@ -481,6 +512,31 @@
         <button type="button" id="close-cierre-modal" class="pill-button" style="margin-top: 20px;">
           Entendido
         </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="tracker-deselect-modal" class="modal-overlay" aria-hidden="true" style="display: none;">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Confirmación</h2>
+      </div>
+      <div class="modal-body">
+        <div style="font-size: 15px; line-height: 1.5; color: var(--text-main);">
+          <strong>¿Deseas desmarcar esta palomita?</strong>
+          <p style="margin-top: 8px; color: var(--text-muted);">
+            Se borrará el registro de tiempo asociado a este paso.
+          </p>
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+          <button type="button" id="tracker-deselect-cancel" class="pill-button" style="flex: 1;">
+            Cancelar
+          </button>
+          <button type="button" id="tracker-deselect-confirm" class="pill-button"
+            style="flex: 1; background: var(--danger, #e53e3e); color: #fff;">
+            Desmarcar
+          </button>
+        </div>
       </div>
     </div>
   </div>

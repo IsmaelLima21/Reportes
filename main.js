@@ -1,13 +1,100 @@
 function getGreetingByHour(date = new Date()) {
   const hour = date.getHours();
-  if (hour < 12) return "Buenos Días.";
-  if (hour < 19) return "Buenas Tardes.";
-  return "Buenas Noches.";
+  if (hour < 12) return "Buenos días.";
+  if (hour < 19) return "Buenas tardes.";
+  return "Buenas noches.";
+}
+
+const SV_DEPARTAMENTOS = {
+  "Ahuachapán": [
+    "Ahuachapán Norte", "Ahuachapán Centro", "Ahuachapán Sur"
+  ],
+  "Santa Ana": [
+    "Santa Ana Este", "Santa Ana Oeste", "Santa Ana Norte"
+  ],
+  "Sonsonate": [
+    "Sonsonate Este", "Sonsonate Oeste", "Sonsonate Norte", "Sonsonate Sur"
+  ],
+  "Chalatenango": [
+    "Chalatenango Norte", "Chalatenango Centro", "Chalatenango Sur"
+  ],
+  "La Libertad": [
+    "La Libertad Norte", "La Libertad Centro", "La Libertad Este",
+    "La Libertad Oeste", "La Libertad Sur", "La Libertad Costa"
+  ],
+  "San Salvador": [
+    "San Salvador Norte", "San Salvador Centro", "San Salvador Este",
+    "San Salvador Oeste", "San Salvador Sur"
+  ],
+  "Cuscatlán": [
+    "Cuscatlán Norte", "Cuscatlán Sur"
+  ],
+  "La Paz": [
+    "La Paz Oeste", "La Paz Centro", "La Paz Este"
+  ],
+  "Cabañas": [
+    "Cabañas Este", "Cabañas Oeste"
+  ],
+  "San Vicente": [
+    "San Vicente Norte", "San Vicente Sur"
+  ],
+  "Usulután": [
+    "Usulután Norte", "Usulután Este", "Usulután Oeste"
+  ],
+  "San Miguel": [
+    "San Miguel Norte", "San Miguel Centro", "San Miguel Oeste"
+  ],
+  "Morazán": [
+    "Morazán Norte", "Morazán Sur"
+  ],
+  "La Unión": [
+    "La Unión Norte", "La Unión Sur"
+  ]
+};
+
+function setupDepartamentoDistrito() {
+  const deptoSelect = document.getElementById("departamento");
+  const distritoSelect = document.getElementById("distrito");
+  if (!deptoSelect || !distritoSelect) return;
+
+  // Populate departamentos
+  Object.keys(SV_DEPARTAMENTOS).forEach((depto) => {
+    const opt = document.createElement("option");
+    opt.value = depto;
+    opt.textContent = depto;
+    deptoSelect.appendChild(opt);
+  });
+
+  function updateDistritos() {
+    const selected = deptoSelect.value;
+    distritoSelect.innerHTML = '<option value="">— Seleccionar —</option>';
+    const distritos = SV_DEPARTAMENTOS[selected] || [];
+    distritos.forEach((d) => {
+      const opt = document.createElement("option");
+      opt.value = d;
+      opt.textContent = d;
+      distritoSelect.appendChild(opt);
+    });
+    distritoSelect.disabled = distritos.length === 0;
+    updatePreview();
+    saveFormState();
+  }
+
+  deptoSelect.addEventListener("change", () => {
+    updateDistritos();
+  });
+
+  // Initialize disabled state
+  distritoSelect.disabled = true;
 }
 
 function buildMessage() {
   const institucion = document.getElementById("institucion").value.trim();
   const codigoCE = document.getElementById("codigoCE")?.value.trim() || "";
+  const departamento = document.getElementById("departamento")?.value.trim() || "";
+  const distrito = document.getElementById("distrito")?.value.trim() || "";
+  const incluirDepartamento = document.getElementById("incluir-departamento")?.checked ?? true;
+  const incluirDistrito = document.getElementById("incluir-distrito")?.checked ?? true;
   const poblacionEstudiantil =
     document.getElementById("poblacionEstudiantil")?.value.trim() || "";
   const estadoBaseMensaje =
@@ -110,6 +197,10 @@ function buildMessage() {
     lines.push(`CENTRO ESCOLAR: ${institucion.toUpperCase()}`);
   if (codigoCE)
     lines.push(`CÓDIGO DE CE: ${codigoCE.toUpperCase()}`);
+  if (incluirDepartamento && departamento)
+    lines.push(`DEPARTAMENTO: ${departamento.toUpperCase()}`);
+  if (incluirDistrito && distrito)
+    lines.push(`DISTRITO: ${distrito.toUpperCase()}`);
 
   if (incluirDirectorCE && directorCE) {
     lines.push(`DIRECTOR DE CE: ${directorCE}`);
@@ -884,6 +975,35 @@ function setupActions() {
       window.open(url, "_blank");
     });
   }
+
+  // Texto Libre Actions
+  const copyTextoBtn = document.getElementById("copy-texto-btn");
+  const clearTextoBtn = document.getElementById("clear-texto-btn");
+  const textoLibreEl = document.getElementById("texto-libree");
+
+  if (copyTextoBtn && textoLibreEl) {
+    copyTextoBtn.addEventListener("click", async () => {
+      const text = textoLibreEl.value;
+      if (!text.trim()) return;
+      try {
+        await navigator.clipboard.writeText(text);
+        showStatus("Texto copiado");
+      } catch {
+        showStatus("Error al copiar");
+      }
+    });
+  }
+
+  if (clearTextoBtn && textoLibreEl) {
+    clearTextoBtn.addEventListener("click", () => {
+      if (!textoLibreEl.value.trim()) return;
+      const confirmed = window.confirm("¿Seguro que deseas borrar todo el texto?");
+      if (confirmed) {
+        textoLibreEl.value = "";
+        // Trigger save if needed, though raw text usually isn't autosaved unless we add a listener
+      }
+    });
+  }
 }
 
 function setupAccordions() {
@@ -1023,6 +1143,38 @@ function startClock() {
   setInterval(update, 60000); // Update every minute
 }
 
+// --- TRACKER DESELECT CONFIRMATION ---
+function showTrackerDeselectModal() {
+  return new Promise((resolve) => {
+    const modal = document.getElementById("tracker-deselect-modal");
+    const confirmBtn = document.getElementById("tracker-deselect-confirm");
+    const cancelBtn = document.getElementById("tracker-deselect-cancel");
+    if (!modal || !confirmBtn || !cancelBtn) {
+      resolve(true); // Fallback: allow deselect if modal not found
+      return;
+    }
+
+    modal.style.display = "flex";
+    requestAnimationFrame(() => {
+      modal.classList.add("modal-overlay--visible");
+    });
+
+    function close(result) {
+      modal.classList.remove("modal-overlay--visible");
+      modal.style.display = "none";
+      confirmBtn.removeEventListener("click", onConfirm);
+      cancelBtn.removeEventListener("click", onCancel);
+      resolve(result);
+    }
+
+    function onConfirm() { close(true); }
+    function onCancel() { close(false); }
+
+    confirmBtn.addEventListener("click", onConfirm);
+    cancelBtn.addEventListener("click", onCancel);
+  });
+}
+
 // --- MANUAL REPORT TRACKER & LOGGING ---
 // --- MANUAL REPORT TRACKER & LOGGING ---
 function setupManualTracker() {
@@ -1077,25 +1229,27 @@ function setupManualTracker() {
     timestamp.textContent = state.time || "";
 
     bubble.addEventListener("click", () => {
-      // Toggle
-      state.active = !state.active;
-
       if (state.active) {
+        // Deselect needs confirmation
+        showTrackerDeselectModal().then((confirmed) => {
+          if (!confirmed) return;
+          state.active = false;
+          bubble.classList.remove("tracker-bubble--active");
+          state.time = null;
+          timestamp.textContent = "";
+          save();
+        });
+      } else {
+        // Activate immediately
+        state.active = true;
         bubble.classList.add("tracker-bubble--active");
-        // Set time
         const now = new Date();
         const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         state.time = timeStr;
         timestamp.textContent = timeStr;
-
-        // Log it
         addLogEntry();
-      } else {
-        bubble.classList.remove("tracker-bubble--active");
-        state.time = null;
-        timestamp.textContent = "";
+        save();
       }
-      save();
     });
 
     container.appendChild(bubble);
@@ -1222,6 +1376,14 @@ function setupCierreReminder() {
           <li style="margin-bottom: 6px;">Si quedaron alumnos a los que no se les entregó paquete, el Cierre es parcial.</li>
           <li>Ya sea Cierre total o parcial no olvides llenar el formulario en línea de reporte de cierre.</li>
         </ol>`;
+    } else if (val === "Llegamos al Centro Educativo") {
+      messageHTML = `
+        <strong>No olvides:</strong>
+        <ol style="margin-top: 8px; padding-left: 20px;">
+          <li style="margin-bottom: 6px;">Validar que el código del Centro Escolar sea el correcto.</li>
+          <li style="margin-bottom: 6px;">Tomar fotografía de la fachada del Centro Escolar y enviarla junto al reporte al grupo de WhatsApp.</li>
+          <li>Llenar el formulario de Asistencia al Centro Escolar o Formulario de Apertura.</li>
+        </ol>`;
     } else if (val === "Entregado en Torre Gobernacion") {
       messageHTML = `
         <strong>Recuerda:</strong>
@@ -1241,7 +1403,24 @@ function setupCierreReminder() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Must run before loadFormState so options exist when state is restored
+  setupDepartamentoDistrito();
   loadFormState();
+  // Re-populate distritos based on restored departamento value
+  const restoredDepto = document.getElementById("departamento")?.value;
+  if (restoredDepto && SV_DEPARTAMENTOS[restoredDepto]) {
+    const distritoSelect = document.getElementById("distrito");
+    const savedDistrito = distritoSelect?.value || "";
+    distritoSelect.innerHTML = '<option value="">— Seleccionar —</option>';
+    SV_DEPARTAMENTOS[restoredDepto].forEach((d) => {
+      const opt = document.createElement("option");
+      opt.value = d;
+      opt.textContent = d;
+      distritoSelect.appendChild(opt);
+    });
+    distritoSelect.disabled = false;
+    if (savedDistrito) distritoSelect.value = savedDistrito;
+  }
   loadExtraMembersFromStorage();
   loadStatusFormState();
   setupFormListeners();
