@@ -68,8 +68,8 @@ body {
 }
 
 .app-header h1 {
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 43px;
+  font-weight: 400;
   color: var(--text-main);
 }
 
@@ -99,7 +99,7 @@ body {
 }
 
 .clock {
-  font-size: 128px;
+  font-size: 180px;
   /* Doubled as requested */
   font-weight: 800;
   color: var(--text-main);
@@ -107,7 +107,7 @@ body {
   /* Extra top margin */
   text-align: center;
   font-variant-numeric: tabular-nums;
-  line-height: 1.2;
+  line-height: 1.0;
 }
 
 /* Manual Report Tracker */
