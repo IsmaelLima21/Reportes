@@ -593,7 +593,7 @@ function updateStatusPreview() {
 function saveStatusFormState() {
   const form = document.getElementById("status-form");
   if (!form) return;
-  const inputs = form.querySelectorAll("input, select");
+  const inputs = form.querySelectorAll("input, select, textarea");
   const data = {};
   inputs.forEach((el) => {
     if (!el.id) return;
@@ -621,7 +621,7 @@ function loadStatusFormState() {
     data = null;
   }
   if (!data) return;
-  const inputs = form.querySelectorAll("input, select");
+  const inputs = form.querySelectorAll("input, select, textarea");
   inputs.forEach((el) => {
     if (!el.id || data[el.id] === undefined) return;
     if (el.type === "checkbox") {
@@ -642,7 +642,7 @@ function loadStatusFormState() {
 function setupStatusFormListeners() {
   const form = document.getElementById("status-form");
   if (!form) return;
-  const inputs = form.querySelectorAll("input, select");
+  const inputs = form.querySelectorAll("input, select, textarea");
 
   inputs.forEach((el) => {
     const handler = () => {
@@ -684,7 +684,7 @@ function showStatus(text) {
 function saveFormState() {
   const form = document.getElementById("message-form");
   if (!form) return;
-  const inputs = form.querySelectorAll("input, select");
+  const inputs = form.querySelectorAll("input, select, textarea");
   const data = {};
   inputs.forEach((el) => {
     if (!el.id) return;
@@ -717,7 +717,7 @@ function loadFormState() {
     data = null;
   }
   if (!data) return;
-  const inputs = form.querySelectorAll("input, select");
+  const inputs = form.querySelectorAll("input, select, textarea");
   inputs.forEach((el) => {
     if (!el.id || data[el.id] === undefined) return;
     if (el.type === "checkbox") {
@@ -740,7 +740,7 @@ function loadFormState() {
 function setupFormListeners() {
   const form = document.getElementById("message-form");
   if (!form) return;
-  const inputs = form.querySelectorAll("input, select");
+  const inputs = form.querySelectorAll("input, select, textarea");
   inputs.forEach((el) => {
     const handler = () => {
       updatePreview();
